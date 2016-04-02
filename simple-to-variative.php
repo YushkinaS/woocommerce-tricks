@@ -1,22 +1,21 @@
 function simple_to_variative($post_id,$bus_price) {
-  $variations = get_children( array( 
-	'post_parent' => $post_id,
-	'post_type'   => 'product_variation', 
-	'numberposts' => -1,
-	'post_status' => 'any'
-    ) );
+	$variations = get_children( array( 
+		'post_parent' => $post_id,
+		'post_type'   => 'product_variation', 
+		'numberposts' => -1,
+		'post_status' => 'any') );
     
-  if ($bus_price==0) {
-  //make product simple and delete variations
-        wp_set_post_terms( $post_id, 'simple','product_type' );
-        foreach ($variations as $variation) {
-            wp_delete_post( $variation->ID, true );
-        }
-    }
+  	if ($bus_price==0) {
+  		//make product simple and delete variations
+        	wp_set_post_terms( $post_id, 'simple','product_type' );
+        	foreach ($variations as $variation) {
+            		wp_delete_post( $variation->ID, true );
+        	}
+	 }
 	else {
-  //set product attribute  
+  		//set product attribute  
 		$attributes  = array(
-			  "pa_bus" => array(
+			"pa_bus" => array(
 				"name" => "pa_bus",
 				"value" => "",
 				"position" => "0",
