@@ -1,4 +1,4 @@
-function simple_to_variative($post_id,$bus_price) {
+function simple_to_variable($post_id,$bus_price) {
 	$variations = get_children( array( 
 		'post_parent' => $post_id,
 		'post_type'   => 'product_variation', 
