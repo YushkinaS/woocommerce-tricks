@@ -4,13 +4,13 @@
 simple-to-variable.php
 
 Чтобы сделать простой товар вариативным, нужно:
-1. Сменить тип товара на вариативный
+* Сменить тип товара на вариативный
 ```php
-		wp_set_post_terms( $post_id, 'variable','product_type' );
+	wp_set_post_terms( $post_id, 'variable','product_type' );
 ```
-2. Задать принадлежность товару атрибута, по которому будем создавать вариации. У меня это атрибут pa_bus
+* Задать принадлежность товару атрибута, по которому будем создавать вариации. У меня это атрибут pa_bus
 ```php
-		$attributes  = array(
+	$attributes  = array(
 			"pa_bus" => array(
 				"name" => "pa_bus",
 				"value" => "",
@@ -20,15 +20,15 @@ simple-to-variable.php
 				"is_taxonomy" => 1
 				)
 		);
-		update_post_meta( $post_id, '_product_attributes', $attributes );
+	update_post_meta( $post_id, '_product_attributes', $attributes );
 ```
-3. Задать доступные значения атрибута
+* Задать доступные значения атрибута
 ```php
-		wp_set_post_terms( $post_id, array(25,26),'pa_bus' ); //сделать потом term_exists($term, $taxonomy, $parent );
+	wp_set_post_terms( $post_id, array(25,26),'pa_bus' ); //сделать потом term_exists($term, $taxonomy, $parent );
 ```
-4. Для каждого значения атрибута создать вариацию
+* Для каждого значения атрибута создать вариацию
 ```php
-		$my_post = array(
+	$my_post = array(
 			  'post_title'    => 'Variation #' . 1 . ' of ' .  $post_id,
 			  'post_name'     => 'product-' . $post_id . '-variation-' . 1,
 			  'post_status'   => 'publish',
@@ -37,7 +37,7 @@ simple-to-variable.php
 			  'guid'          =>  home_url() . '/?product_variation=product-' . $post_id . '-variation-' . 1
 			);
         
-	  $id = wp_insert_post( $my_post,true );
+	$id = wp_insert_post( $my_post,true );
 
 		update_post_meta( $id, 'attribute_pa_bus', 'need');
 		update_post_meta( $id, '_price', $price+$bus_price );
