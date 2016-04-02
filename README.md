@@ -1,8 +1,45 @@
 # woocommerce-tricks
 
-# Программно создать вариативный товар
+# Программно создать вариативный товар:
 simple-to-variable.php
 
-Торгуем экскурсиями. К месту проведения экскурсии клиенты добираются самостоятельно, но в некоторых случаях организаторы предоставляют автобус. Клиент может доехать сам или доплатить некоторую сумму за место в автобусе. Стоимость проезда хранится в custom field.  Если это поле определено для товара, то он должен быть вариативным с двумя вариациями. Если стоимость проезда не задана - товар простой.
+Чтобы сделать простой товар вариативным, нужно:
+1. Сменить тип товара на вариативный
+```php
+		wp_set_post_terms( $post_id, 'variable','product_type' );
+```
+2. Задать принадлежность товару атрибута, по которому будем создавать вариации. У меня это атрибут pa_bus
+```php
+		$attributes  = array(
+			"pa_bus" => array(
+				"name" => "pa_bus",
+				"value" => "",
+				"position" => "0",
+				"is_visible" => 1,
+				"is_variation" => 1,
+				"is_taxonomy" => 1
+				)
+		);
+		update_post_meta( $post_id, '_product_attributes', $attributes );
+```
+3. Задать доступные значения атрибута
+```php
+		wp_set_post_terms( $post_id, array(25,26),'pa_bus' ); //сделать потом term_exists($term, $taxonomy, $parent );
+```
+4. Для каждого значения атрибута создать вариацию
+```php
+		$my_post = array(
+			  'post_title'    => 'Variation #' . 1 . ' of ' .  $post_id,
+			  'post_name'     => 'product-' . $post_id . '-variation-' . 1,
+			  'post_status'   => 'publish',
+			  'post_parent'   => $post_id,
+			  'post_type'     => 'product_variation',
+			  'guid'          =>  home_url() . '/?product_variation=product-' . $post_id . '-variation-' . 1
+			);
+        
+	  $id = wp_insert_post( $my_post,true );
 
-В функцию передается ID товара и стоимость проезда. Если стоимость больше нуля - создаем товар с двумя вариациями по атрибуту pa_bus - автобус нужен (стоимость вариации включает стоимость проезда) и автобус не нужен (в стоимость входит только сама экскурсия). 
+		update_post_meta( $id, 'attribute_pa_bus', 'need');
+		update_post_meta( $id, '_price', $price+$bus_price );
+		update_post_meta( $id, '_regular_price',  $price+$bus_price);
+```		
